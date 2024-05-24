@@ -1,0 +1,21 @@
+package components
+
+import (
+	"github.com/mattbr0wn/website/config"
+	"github.com/mattbr0wn/website/internal/markdown"
+)
+
+templ About(headData config.HeadData, articleMeta markdown.Frontmatter, body templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head(headData)
+		<body class={ Base() }>
+			@Header()
+			<img class={ HeroImg() } src={ HeroImgPath(articleMeta) } alt={ articleMeta.Title }/>
+			<div>
+				@body
+			</div>
+			@Footer(headData.Author)
+		</body>
+	</html>
+}

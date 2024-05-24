@@ -1,0 +1,46 @@
+package components
+
+css navBase() {
+	padding: 10px;
+}
+
+css navContainer() {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+css navHome() {
+	margin: 0;
+	font-size: 24px;
+	text-decoration: none;
+	color: inherit;
+}
+
+css navMenu() {
+	font-size: 18px;
+	text-decoration: none;
+	color: inherit;
+}
+
+css menuSpacing() {
+	margin-right: 20px;
+	text-decoration: none;
+	color: inherit;
+}
+
+templ Header() {
+	<nav class={ navBase() }>
+		<div class={ navContainer() }>
+			<a href="/" class={ navHome() }>
+				<h1>Matt Brown</h1>
+			</a>
+			<div class={ navMenu() }>
+				<a href="/about" class={ menuSpacing() }>About</a>
+				<a href="/writing" class={ NoLinkStyles() }>Writing</a>
+			</div>
+		</div>
+	</nav>
+}

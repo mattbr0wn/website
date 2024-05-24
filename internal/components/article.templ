@@ -1,0 +1,73 @@
+package components
+
+import (
+	"fmt"
+	"time"
+	"github.com/mattbr0wn/website/config"
+	"github.com/mattbr0wn/website/internal/markdown"
+	"github.com/mattbr0wn/website/pkg/reading_time"
+)
+
+css DateAndReadTime() {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+css PubDate() {
+	color: blue;
+}
+
+css ReadTime() {
+	font-style: italic;
+}
+
+css HeroImg() {
+	max-width: 80ch;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	margin: 0 auto;
+}
+
+templ Article(headData config.HeadData, articleMeta markdown.Frontmatter, body templ.Component, bodyText *string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head(headData)
+		<body class={ Base() }>
+			@Header()
+			<h1>{ articleMeta.Title }</h1>
+			<div class={ DateAndReadTime() }>
+				<span class={ PubDate() }>{ formatDate(articleMeta.Date) }</span>
+				<span class={ ReadTime() }>{ reading_time.TimeToRead(*bodyText) }</span>
+			</div>
+			<img class={ HeroImg() } src={ HeroImgPath(articleMeta) } alt={ articleMeta.Title }/>
+			<div class={ BodyText() }>
+				@body
+			</div>
+			@Footer(headData.Author)
+		</body>
+	</html>
+}
+
+func HeroImgPath(articleMeta markdown.Frontmatter) string {
+	return "../web/img/" + articleMeta.HeroImg
+}
+
+func formatDate(dateString string) string {
+	months := []string{
+		"January", "February", "March", "April", "May", "June",
+		"July", "August", "September", "October", "November", "December",
+	}
+
+	date, err := time.Parse("2006-01-02", dateString)
+	if err != nil {
+		panic(err)
+	}
+
+	day := fmt.Sprintf("%02d", date.Day())
+	monthName := months[date.Month()-1]
+	year := fmt.Sprintf("%d", date.Year())
+
+	return strings.Join([]string{day, monthName, year}, " ")
+}

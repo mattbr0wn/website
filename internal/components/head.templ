@@ -1,0 +1,26 @@
+package components
+
+import (
+	"github.com/mattbr0wn/website/config"
+)
+
+templ Head(data config.HeadData) {
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width,initial-scale=1"/>
+		<title>{ data.Title }</title>
+		<meta name="description" content={ data.Description }/>
+		<meta name="keywords" content={ data.Keywords }/>
+		<meta name="author" content={ data.Author }/>
+		<link rel="icon" href="/img/favicon.ico"/>
+		<meta property="og:title" content={ data.Title }/>
+		<meta property="og:description" content={ data.Description }/>
+		<meta property="og:image" content={ data.SocialImg }/>
+		<meta property="og:url" content={ data.WebsiteUrl }/>
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta name="twitter:title" content={ data.Title }/>
+		<meta name="twitter:description" content={ data.Description }/>
+		<meta name="twitter:image" content={ data.SocialImg }/>
+		<link rel="canonical" href={ data.WebsiteUrl }/>
+	</head>
+}

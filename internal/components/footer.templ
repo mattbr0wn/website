@@ -1,0 +1,38 @@
+package components
+
+import (
+	"time"
+	"strconv"
+)
+
+css footer() {
+	grid-area: footer;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px 0;
+}
+
+css footerSeparator() {
+	border: none;
+	border-top: 1px solid #ccc;
+	margin: 20px 0;
+	position: relative;
+	width: 100%;
+}
+
+templ Footer(author string) {
+	<footer class={ footer() }>
+		<div>
+			<hr class={ footerSeparator() }/>
+			Copyright © { getCurrentYear() } { author }. All rights reserved.
+		</div>
+	</footer>
+}
+
+func getCurrentYear() string {
+	currentTime := time.Now()
+	year := currentTime.Year()
+	return strconv.Itoa(year)
+}
