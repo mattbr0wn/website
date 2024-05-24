@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -60,6 +61,7 @@ func getFilePath(rootPath string, urlPath string) string {
 		}
 
 		htmlFilePath := filePath + ".html"
+		fmt.Println(htmlFilePath)
 		if fileExists(htmlFilePath) {
 			return htmlFilePath
 		}

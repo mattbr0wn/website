@@ -315,7 +315,7 @@ func Article(headData config.HeadData, articleMeta markdown.Frontmatter, body te
 }
 
 func HeroImgPath(articleMeta markdown.Frontmatter) string {
-	return "../web/img/" + articleMeta.HeroImg
+	return "../img/" + articleMeta.HeroImg
 }
 
 func formatDate(dateString string) string {

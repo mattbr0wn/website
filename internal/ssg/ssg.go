@@ -119,7 +119,7 @@ func create404(rootPath string) {
 
 func createPage(contentType string, rootPath string, headData config.HeadData, contentPath string, articleData *[]markdown.ArticleData) {
 	name := GeneratePath(rootPath, contentPath)
-	trimmedName := strings.TrimPrefix(name, "static/writing/")
+	trimmedName := strings.TrimPrefix(name, "web/static/")
 
 	f := createHtmlFile(name)
 	metadata, body, mdString := markdown.ParseMarkdownFile(contentPath)
