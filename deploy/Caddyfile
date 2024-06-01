@@ -1,0 +1,4 @@
+dev.mateocafe.com {
+    root /web/static
+    file_server
+}
