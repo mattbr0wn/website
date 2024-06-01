@@ -12,12 +12,12 @@ def run_command(command):
 
 def rebuild():
     run_command("git pull")
-    build = HOME + "/cmd/website.go build"
+    build = HOME + "/src/website/cmd/website.go build"
     run_command(f"go run {build}")
 
 
 def restart_caddy():
-    docker_compose = HOME + "/caddy/docker_compose.yaml"
+    docker_compose = HOME + "/src/caddy/docker_compose.yaml"
     run_command(f"sudo docker compose -f {docker_compose} restart")
 
 
