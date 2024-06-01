@@ -1,6 +1,6 @@
 dev.mateocafe.com {
     root /mateocafe
-    try_files {path}.html {path} /404.html
+    try_files {path}.html {path}/index.html {path} /404.html 
     file_server
     tls {
         dns cloudflare {env.CLOUDFLARE_API_TOKEN}
