@@ -1,5 +1,5 @@
 dev.mateocafe.com {
-    root /web/static
+    root /mateocafe
     file_server
     tls {
         dns cloudflare {env.CLOUDFLARE_API_TOKEN}
