@@ -17,7 +17,7 @@ def rebuild():
 
 
 def restart_caddy():
-    docker_compose = HOME + "/src/caddy/docker_compose.yaml"
+    docker_compose = HOME + "/src/caddy/docker-compose.yaml"
     run_command(f"sudo docker compose -f {docker_compose} restart")
 
 
