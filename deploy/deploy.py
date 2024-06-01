@@ -12,7 +12,7 @@ def run_command(command):
 
 def rebuild():
     run_command("git pull")
-    build = HOME + "cmd/website.go build"
+    build = HOME + "/cmd/website.go build"
     run_command(f"go run {build}")
 
 
