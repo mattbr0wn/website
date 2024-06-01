@@ -17,5 +17,6 @@ templ:
     git clone https://github.com/a-h/templ.git 
     (cd templ/cmd/templ && GOOS=linux GOARCH=amd64 go build -o templ-linux-amd64)
     (cd templ/cmd/templ && GOOS=darwin GOARCH=arm64 go build -o templ-darwin-arm64)
+    (cd templ/cmd/templ && GOOS=linux GOARCH=arm64 go build -o templ-linux-arm64)
     mv templ/cmd/templ/templ-* {{templDir}}
     rm -rf templ
