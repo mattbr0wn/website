@@ -22,8 +22,8 @@ func TimeToRead(text string) string {
 		seconds := int(math.Round(float64(wordCount%wordsPerMinute) * 60.0 / float64(wordsPerMinute)))
 		return fmt.Sprintf("%d seconds", seconds)
 	} else if roundedMinutes == 1 {
-		return "1 minute"
+		return "1 minute read"
 	} else {
-		return fmt.Sprintf("%d minutes", roundedMinutes)
+		return fmt.Sprintf("%d minute read", roundedMinutes)
 	}
 }

@@ -1,7 +1,8 @@
 package components
 
 css navBase() {
-	padding: 10px;
+	padding: 40px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 css navContainer() {
@@ -35,7 +36,7 @@ templ Header() {
 	<nav class={ navBase() }>
 		<div class={ navContainer() }>
 			<a href="/" class={ navHome() }>
-				<h1>Matt Brown</h1>
+				Matt Brown
 			</a>
 			<div class={ navMenu() }>
 				<a href="/about" class={ menuSpacing() }>About</a>

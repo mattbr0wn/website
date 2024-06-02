@@ -11,9 +11,11 @@ templ About(headData config.HeadData, articleMeta markdown.Frontmatter, body tem
 		@Head(headData)
 		<body class={ Base() }>
 			@Header()
-			<img class={ HeroImg() } src={ HeroImgPath(articleMeta) } alt={ articleMeta.Title }/>
-			<div>
-				@body
+			<div class={ Wrapper() }>
+				<img class={ HeroImg() } src={ HeroImgPath(articleMeta) } alt={ articleMeta.Title }/>
+				<div>
+					@body
+				</div>
 			</div>
 			@Footer(headData.Author)
 		</body>

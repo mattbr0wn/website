@@ -1,75 +1,76 @@
 package components
 
 import (
-	"github.com/mattbr0wn/website/config"
-	"github.com/mattbr0wn/website/internal/markdown"
-	"github.com/mattbr0wn/website/pkg/reading_time"
+"github.com/mattbr0wn/website/config"
+"github.com/mattbr0wn/website/internal/markdown"
+"github.com/mattbr0wn/website/pkg/reading_time"
 )
 
 css postGrid() {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-	flex: 1;
+display: flex;
+flex-direction: column;
+gap: 20px;
+flex: 1;
 }
 
 css postCard() {
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	padding: 10px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	display: flex;
-	align-items: center;
+border: 1px solid #ccc;
+border-radius: 5px;
+padding: 10px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+display: flex;
+align-items: center;
 }
 
 css postCardImg() {
-	width: 200px;
-	height: auto;
-	object-fit: cover;
-	border-radius: 5px;
-	margin-right: 20px;
+width: 200px;
+height: auto;
+object-fit: cover;
+border-radius: 5px;
+margin-right: 20px;
 }
 
 css postContent() {
-	flex: 1;
+flex: 1;
 }
 
 css postMeta() {
-	color: #888;
-	font-size: 14px;
+color: #888;
+font-size: 14px;
 }
 
 templ Writing(headData config.HeadData, articles *[]markdown.ArticleData) {
-	<!DOCTYPE html>
-	<html lang="en">
-		@Head(headData)
-		<body class={ Base() }>
-			@Header()
-			<div class={ Wrapper() }>
-				<h1>Writing</h1>
-				<div class={ postGrid() }>
-					for i, _ := range *articles {
-						@card((*articles)[i].Metadata, (*articles)[i].Path, (*articles)[i].Body)
-					}
-				</div>
-				@Footer(headData.Author)
-			</div>
-		</body>
-	</html>
+<!DOCTYPE html>
+<html lang="en">
+@Head(headData)
+
+<body class={ Base() }>
+    @Header()
+    <div class={ Wrapper() }>
+        <h1>Writing</h1>
+        <div class={ postGrid() }>
+            for _, article := range *articles {
+            @card(article.Metadata, article.Path, article.Body)
+            }
+        </div>
+    </div>
+    @Footer(headData.Author)
+</body>
+
+</html>
 }
 
 templ card(articleMeta markdown.Frontmatter, path string, bodyText *string) {
-	<a href={ templ.SafeURL(path[:len(path)-5]) } class={ NoLinkStyles() }>
-		<div class={ postCard() }>
-			<img class={ postCardImg() } src={ "../img/" + articleMeta.HeroImg } alt={ articleMeta.Title }/>
-			<div class={ postContent() }>
-				<h2>{ articleMeta.Title }</h2>
-				<p>{ articleMeta.Description }</p>
-				<p class={ postMeta() }>
-					{ formatDate(articleMeta.Date) } | Time to read: { 
+<a href={ templ.SafeURL(path[:len(path)-5]) } class={ NoLinkStyles() }>
+    <div class={ postCard() }>
+        <div class={ postContent() }>
+            <h2>{ articleMeta.Title }</h2>
+            <p>{ articleMeta.Description }</p>
+            <p class={ postMeta() }>
+                { formatDate(articleMeta.Date) } | {
                 reading_time.TimeToRead(*bodyText) }
-				</p>
-			</div>
-		</div>
-	</a>
+            </p>
+        </div>
+    </div>
+</a>
 }

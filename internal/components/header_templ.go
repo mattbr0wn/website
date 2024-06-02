@@ -13,7 +13,8 @@ import "strings"
 
 func navBase() templ.CSSClass {
 	var templ_7745c5c3_CSSBuilder strings.Builder
-	templ_7745c5c3_CSSBuilder.WriteString(`padding:10px;`)
+	templ_7745c5c3_CSSBuilder.WriteString(`padding:40px;`)
+	templ_7745c5c3_CSSBuilder.WriteString(`border-bottom:1px solid rgba(0, 0, 0, 0.1);`)
 	templ_7745c5c3_CSSID := templ.CSSID(`navBase`, templ_7745c5c3_CSSBuilder.String())
 	return templ.ComponentCSSClass{
 		ID:    templ_7745c5c3_CSSID,
@@ -147,7 +148,7 @@ func Header() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h1>Matt Brown</h1></a>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Matt Brown</a>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

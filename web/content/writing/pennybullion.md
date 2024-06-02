@@ -25,7 +25,6 @@ I closed my laptop and sat in silence in the basement of my parents house--unemp
 
 I sat on the couch one evening when a news report came on.
 
-{% youtube url="https://www.youtube.com/embed/GSF4B-AiOoI" label="Pennies cost more than a penny to make" /%}
 
 The news segment ended with a comment that caught my attention. Something to the effect of,
 > "...and they last changed the composition of the penny in 1982. A pre-1982 penny now contains over two cents worth of copper..."
@@ -39,8 +38,6 @@ The next morning I went to my local bank and bought $100 worth of pennies. The p
 Several hours of sorting resulted in three piles: pennies newer than 1982 (mostly zinc), pennies minted between 1959 - 1982 (95% copper), and pre-1959. The pre-1959 "Wheat" pennies had numismatic value and could be sold to collectors.
 
 The initial distribution looked like this: 
-
-![Pile of US Pennies](/images/penny-distribution.webp)
 
 The initial $100 broke down into roughly $70 in zinc coin, $29 in 95% copper coin and $1 in collectable "wheat" pennies. Given 155 pre-1982 pennies equals a pound of copper, at $3 a pound for copper I calculated the metal value of the  coins to be worth $58. Add in an average price of five cents per "wheat" penny and I'm looking at a total return of $34 on a $100 investment, or a 34% risk-free ROI. Business thesis sorted, I was off to valitdate what I viewed as the critial operational variables:
 
@@ -82,8 +79,6 @@ The penny hoarder's fiat hedge of choice?
 
 The pre-1982 US penny.
 
-![US 1 cent coin](/images/us-penny.webp)
-
 The penny hoarder community was hardcore. Ryedale was the penny miner. He invented a machine that [mined for copper pennies](https://www.pennysorter.com/). Pour wild circulating pennies in the top, extract the copper pennies out the bottom. It was genius.
 
 Another guy, Copper Catcher, was the penny whale. He offered spot copper rates for pre-sorted bags of pre-1982 pennies. He aggressively bought up all copper coins offered for sale.  A true OG HODLer.
@@ -102,8 +97,6 @@ After a couple days of manual sorting on the kitchen table, the tally was in:
 - $4 in wheat pennies
 
 Now sitting on 110 lbs of copper coin, it was time to make a sale.
-
-![a pile of US pennies](/images/pile-of-pennies.webp)
 
 ## The moment of truth
 
@@ -126,8 +119,6 @@ It took a couple days to convince the Penny Bros that my wares were legit.  Then
 *How the hell do I ship $110 of pennies?*
 
 That was the question that kept rolling around in my head. The payment cleared PayPal days ago, and the clock was ticking. I needed to find a solution, fast. I figured the best way to secure the coin was to roll them up and place them in boxes. This is how they come when you order coin from the bank, so if it's good enough for the bank, it should work.
-
-![rolls of pennies](/images/penny-rolls.webp)
 
 As it turns out, the [Priority Mail Medium Flat Rate Box](https://store.usps.com/store/product/shipping-supplies/priority-mail-medium-flat-rate-box-2-P_O_FRB2) fit three boxes of pennies almost perfectly. Parcels in hand, I lugged the pennies to the post office and off they went.
 
@@ -162,8 +153,6 @@ Amazingly this worked, and for some reason the copper content was higher when so
 Next bottleneck was the disposal of the zinc coin. As 65-70% of all the coin I purchased were zincs, I needed a quick and reliable way to turn large quantities of these pennies to cash.
 By this point, my normal bank had made it clear I was no longer welcome to deposit coins. Looking back now, I can't blame them. I held $100 in deposits with them. They lost money on me every time I showed up with a bucket of pennies.
 
-![buckets of pennies](/images/buckets-of-pennies.webp)
-
 Setting up accounts at multiple banks wouldn't solve the problem either. It takes time to go from bank to bank, and eventually they'd all cut me off for the same reason. With zinc pennies piling up in my garage, I needed to find a way out of this mess. Desperate for a solution, I came up with a crazy idea.
 
 The thinking went like this: 
@@ -177,8 +166,6 @@ I knew the ideal credit union to target, and after much trial and error I came u
 They bought it.
 
 Relieved that I now had a reliable way to turn the zinc coin to cash, I turned my attention to sales. As I exhausted the demand on the Realcent forums, copper coin inventory started to pile up. As an experiment, I setup an eBay account under the Pennybullion handle and started running auctions. 
-
-![penny-auction](/images/penny-auction.webp)
 
 Much to my surprise, with every auction I was making a 2 to 2.5x return on each bag of copper coin. Before long I was selling everything I could get my hands on.
 
@@ -204,8 +191,6 @@ An hour later, the bank called me back and confirmed my appointment in two days 
 
 Doing some back of the envelope math, I calculated that $10,000 in pennies weighs approximately 3 tons. I started calling every truck rental company I could find and gave them my requirements.  Luckily, Ryder was willing to rent me a 16 ft box truck which could (barely) handle the load. Game on.
 
-![16 ft box truck](/images/ryder-truck.webp)
-
 Returning from the Federal Reserve freshly loaded down with coin, I started again. 
 
 Sort, count, auction, box, ship, return. 
@@ -215,8 +200,6 @@ In all honesty it was a monotonous job and a hell of a workout. The $10,000 in p
 ## Pennybullion.com
 
 Looking at the current rate of sales through the eBay store, I calculated it would take a month to sell an entire ton of copper pennies. Inventory turnover was now the bottleneck. I needed a way to sell in bulk.
-
-![Pennybullion logo](/images/pennybullion.webp)
 
 I purchased the domain [pennybullion.com](https://pennybullion.com/) and stood up the most basic e-commerce site on the internet. I figured the easiest way to sell a ton of copper pennies was to offer a ton of copper pennies for sale. Thus, the site contained a single product--the One Ton. One ton of copper coins shipped to your door for $7500. I setup google Adwords, set my budget at $100 for the month and went about my day.
 
@@ -242,8 +225,6 @@ Holy shit! That's it!
 
 Shipping was my single largest expense item. I'd gladly load trucks for a couple hours a day to cut my costs by 40%! It was a no brainer. So the next day I did what any rational person in the penny business would do--I went and applied for a job at FedEx.
 
-![Fedex sorting facility](/images/fedex.webp)
-
 A week later, I started working the night shift loading trucks at the FedEx distribution hub in Olathe, Kansas. I worked from 8p - 11p, five days a week. I selected the night shift as it was off hours from the daytime penny business. 
 
 FedEx was a great place to work. It paid well, the people were nice and the benefits were great. Factoring in the shipping discount, I figured I was the highest paid hourly employee in the company.
@@ -264,8 +245,6 @@ The hoarders loved it. They'd simply mine 50% more than they would for personal 
 
 As my US distribution grew, I started getting calls from coin processing companies in Canada looking to increase their bottom line. As one guy explained to me over the phone, the beauty of the Canadian penny is that it's 98% copper (vs 95% for the US coin), and there's no export ban. The Canadian boys wanted in on the action, and I was all too happy to oblige.
 Pennybullion.com now had its second product--the Canadian Ton.
-
-![Canadian pennies](/images/canadian-pennies.webp)
 
 ## Off to school
 Fast forward 11 months, it was time to jump off this crazy train and board a plane bound for England to pursue my MBA. Up to that point, Pennybullion's growth had been consistent. Through a relentless focus on optimising cycle time and compounding returns, I had paid back the initial $1000 loan and made enough money to:
