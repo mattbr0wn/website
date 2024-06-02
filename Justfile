@@ -9,7 +9,7 @@ build:
     go run {{main}} build
 
 deploy:
-    ssh -t -p 16 brown@49.13.166.32 'cd src/website && git pull && go run {{main}} build && cd .. && cd caddy && sudo docker compose -f docker-compose.yaml restart'
+    ssh -t -p 16 brown@49.13.166.32 'cd src/website && git pull && /usr/local/go/bin/go run {{main}} build && cd .. && cd caddy && sudo docker compose -f docker-compose.yaml restart'
 
 run:
     templ generate
