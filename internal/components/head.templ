@@ -1,33 +1,33 @@
 package components
 
 import (
-	"github.com/mattbr0wn/website/config"
+"github.com/mattbr0wn/website/config"
 )
 
 templ Head(data config.HeadData) {
-	<head>
-		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width,initial-scale=1"/>
-		<title>{ data.Title }</title>
-		<meta name="description" content={ data.Description }/>
-		<meta name="keywords" content={ data.Keywords }/>
-		<meta name="author" content={ data.Author }/>
-		<link rel="icon" href="/img/favicon.ico"/>
-		<meta property="og:title" content={ data.Title }/>
-		<meta property="og:description" content={ data.Description }/>
-		<meta property="og:image" content={ data.SocialImg }/>
-		<meta property="og:url" content={ data.WebsiteUrl }/>
-		<meta name="twitter:card" content="summary_large_image"/>
-		<meta name="twitter:title" content={ data.Title }/>
-		<meta name="twitter:description" content={ data.Description }/>
-		<meta name="twitter:image" content={ data.SocialImg }/>
-		<link rel="canonical" href={ data.WebsiteUrl }/>
-		<link rel="preconnect" href="https://fonts.googleapis.com"/>
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-		<link
-			href="https://fonts.googleapis.com/css2?family=REM:ital,wght@0,100..400;1,100..400&display=swap"
-			rel="stylesheet"
-		/>
-		<link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&display=swap" rel="stylesheet"/>
-	</head>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{ data.Title }</title>
+    <meta name="description" content={ data.Description } />
+    <meta name="keywords" content={ data.Keywords } />
+    <meta name="author" content={ data.Author } />
+    <link rel="icon" href="/img/favicon.ico" />
+    <meta property="og:title" content={ data.Title } />
+    <meta property="og:description" content={ data.Description } />
+    <meta property="og:image" content={ data.SocialImg } />
+    <meta property="og:url" content={ data.WebsiteUrl } />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ data.Title } />
+    <meta name="twitter:description" content={ data.Description } />
+    <meta name="twitter:image" content={ data.SocialImg } />
+    <link rel="canonical" href={ data.WebsiteUrl } />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=REM:ital,wght@0,100..400;1,100..400&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&display=swap" rel="stylesheet" />
+    <script defer data-domain="mateocafe.com" src="https://stats.fuzzylogicmedia.com/js/script.js"></script>
+</head>
 }
