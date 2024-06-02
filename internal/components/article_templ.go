@@ -155,14 +155,14 @@ func Article(headData config.HeadData, articleMeta markdown.Frontmatter, body te
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<br>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" · ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(reading_time.TimeToRead(*bodyText))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 44, Col: 48}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 43, Col: 48}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {

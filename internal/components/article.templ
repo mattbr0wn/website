@@ -39,8 +39,7 @@ templ Article(headData config.HeadData, articleMeta markdown.Frontmatter, body t
     <div class={ Wrapper() }>
         <h1>{ articleMeta.Title }</h1>
         <p>
-            { formatDate(articleMeta.Date) }
-            <br />
+            { formatDate(articleMeta.Date) } ·
             { reading_time.TimeToRead(*bodyText) }
         </p>
         <div class={ BodyText() }>

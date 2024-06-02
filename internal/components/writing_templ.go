@@ -34,25 +34,11 @@ func postCard() templ.CSSClass {
 	var templ_7745c5c3_CSSBuilder strings.Builder
 	templ_7745c5c3_CSSBuilder.WriteString(`border:1px solid #ccc;`)
 	templ_7745c5c3_CSSBuilder.WriteString(`border-radius:5px;`)
-	templ_7745c5c3_CSSBuilder.WriteString(`padding:10px;`)
+	templ_7745c5c3_CSSBuilder.WriteString(`padding:20px;`)
 	templ_7745c5c3_CSSBuilder.WriteString(`box-shadow:0 2px 5px rgba(0, 0, 0, 0.1);`)
 	templ_7745c5c3_CSSBuilder.WriteString(`display:flex;`)
 	templ_7745c5c3_CSSBuilder.WriteString(`align-items:center;`)
 	templ_7745c5c3_CSSID := templ.CSSID(`postCard`, templ_7745c5c3_CSSBuilder.String())
-	return templ.ComponentCSSClass{
-		ID:    templ_7745c5c3_CSSID,
-		Class: templ.SafeCSS(`.` + templ_7745c5c3_CSSID + `{` + templ_7745c5c3_CSSBuilder.String() + `}`),
-	}
-}
-
-func postCardImg() templ.CSSClass {
-	var templ_7745c5c3_CSSBuilder strings.Builder
-	templ_7745c5c3_CSSBuilder.WriteString(`width:200px;`)
-	templ_7745c5c3_CSSBuilder.WriteString(`height:auto;`)
-	templ_7745c5c3_CSSBuilder.WriteString(`object-fit:cover;`)
-	templ_7745c5c3_CSSBuilder.WriteString(`border-radius:5px;`)
-	templ_7745c5c3_CSSBuilder.WriteString(`margin-right:20px;`)
-	templ_7745c5c3_CSSID := templ.CSSID(`postCardImg`, templ_7745c5c3_CSSBuilder.String())
 	return templ.ComponentCSSClass{
 		ID:    templ_7745c5c3_CSSID,
 		Class: templ.SafeCSS(`.` + templ_7745c5c3_CSSID + `{` + templ_7745c5c3_CSSBuilder.String() + `}`),
@@ -287,7 +273,7 @@ func card(articleMeta markdown.Frontmatter, path string, bodyText *string) templ
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(articleMeta.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 67, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 59, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -300,7 +286,7 @@ func card(articleMeta markdown.Frontmatter, path string, bodyText *string) templ
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(articleMeta.Description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 68, Col: 40}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 60, Col: 40}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
@@ -335,13 +321,13 @@ func card(articleMeta markdown.Frontmatter, path string, bodyText *string) templ
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(formatDate(articleMeta.Date))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 70, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 62, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" | ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" · ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -349,7 +335,7 @@ func card(articleMeta markdown.Frontmatter, path string, bodyText *string) templ
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(
 			reading_time.TimeToRead(*bodyText))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 71, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/writing.templ`, Line: 63, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
