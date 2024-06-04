@@ -9,7 +9,6 @@ import (
 
 	"github.com/mattbr0wn/website/config"
 	"github.com/mattbr0wn/website/internal/rss"
-	"github.com/mattbr0wn/website/internal/server"
 	"github.com/mattbr0wn/website/internal/ssg"
 )
 
@@ -17,14 +16,6 @@ func main() {
 	const port = "1616"
 	const rootPath = "web/static"
 	const buildCmd = "build"
-	const runCmd = "run"
-
-	if len(os.Args) < 2 {
-		fmt.Println("Please provide a command: build or run")
-		os.Exit(1)
-	}
-
-	cmd := os.Args[1]
 
 	headData, err := config.HeadConfig()
 	if err != nil {
@@ -36,20 +27,9 @@ func main() {
 		panic(err)
 	}
 
-	switch cmd {
-	case buildCmd:
-		err := buildStaticWebsite(rootPath, headData, &markdownFiles)
-		if err != nil {
-			fmt.Printf("Error: Can't build website: %v", err)
-		}
-
-	case runCmd:
-		fmt.Println("Starting server...")
-		server.ServeWebsite(port, rootPath)
-
-	default:
-		fmt.Printf("Invalid command: %s. Please use build or run.\n", cmd)
-		os.Exit(1)
+	buildErr := buildStaticWebsite(rootPath, headData, &markdownFiles)
+	if buildErr != nil {
+		fmt.Printf("Error: Can't build website: %v", err)
 	}
 }
 
@@ -80,13 +60,6 @@ func buildStaticWebsite(rootPath string, headData config.HeadData, markdownFiles
 
 	templBinary := fmt.Sprintf("./bin/templ-%s-%s", goos, goarch)
 	fmt.Println(templBinary)
-
-	// Run the templ build command
-	cmd = exec.Command(templBinary, "generate")
-	if err := cmd.Run(); err != nil {
-		fmt.Println("Error building templ files:", err)
-		return err
-	}
 
 	fmt.Println("Building static pages...")
 	ssg.BuildStaticPages(rootPath, headData)

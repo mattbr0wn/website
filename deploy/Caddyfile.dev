@@ -1,0 +1,5 @@
+localhost:1616
+
+root * web/static
+try_files {path}.html {path}/index.html {path} /404.html
+file_server
