@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 
 	"github.com/mattbr0wn/website/config"
 	"github.com/mattbr0wn/website/internal/rss"
@@ -53,13 +52,6 @@ func buildStaticWebsite(rootPath string, headData config.HeadData, markdownFiles
 		fmt.Println("Error copying images to static:", err)
 		return err
 	}
-
-	// Detect the current operating system and architecture
-	goos := runtime.GOOS
-	goarch := runtime.GOARCH
-
-	templBinary := fmt.Sprintf("./bin/templ-%s-%s", goos, goarch)
-	fmt.Println(templBinary)
 
 	fmt.Println("Building static pages...")
 	ssg.BuildStaticPages(rootPath, headData)
