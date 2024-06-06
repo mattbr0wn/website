@@ -5,6 +5,10 @@ projectDir := "~/src/github.com/mattbr0wn/website"
 main := "cmd/website.go"
 templDir := projectDir + "/bin"
 
+build:
+	templ generate
+	go run {{main}}
+
 deploy:
     templ generate
     go run {{main}}
