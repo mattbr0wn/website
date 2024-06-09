@@ -54,7 +54,7 @@ func getFeedItems(markdownFiles *[]string) []Item {
 
 	for _, file := range *markdownFiles {
 		metadata, _, _ := markdown.ParseMarkdownFile(file)
-		if metadata.Draft != true && filepath.Base(file) != "index.md" {
+		if metadata.Draft != true && filepath.Base(file) != "_index.md" {
 			link := filepath.Join(config.WEBSITE_URL, strings.TrimPrefix(ssg.GenerateStaticUrl(file), config.ROOT_DIR))
 			feedItems := Item{
 				Title:       metadata.Title,

@@ -47,20 +47,23 @@ func BuildStaticPages(markdownFiles []string) {
 
 	for _, file := range markdownFiles {
 		switch file {
-		case filepath.Join(config.CONTENT_DIR, "index.md"):
+		case filepath.Join(config.CONTENT_DIR, "_index.md"):
 			generateHtmlPage("index", file, &articleData)
-		case filepath.Join(config.CONTENT_DIR, "about/index.md"):
+		case filepath.Join(config.CONTENT_DIR, "about/_index.md"):
 			generateHtmlPage("about", file, &articleData)
-		case filepath.Join(config.CONTENT_DIR, "writing/index.md"):
+		case filepath.Join(config.CONTENT_DIR, "writing/_index.md"):
 			// do nothing
 		default:
 			generateHtmlPage("writing", file, &articleData)
 		}
 	}
-	generateHtmlPage("writing-index", filepath.Join(config.CONTENT_DIR, "writing/index.md"), &articleData)
+	generateHtmlPage("writing-index", filepath.Join(config.CONTENT_DIR, "writing/_index.md"), &articleData)
 }
 
 func GenerateStaticUrl(filePath string) string {
+	if filepath.Base(filePath) == "_index.md" {
+		filePath = filepath.Join(filepath.Dir(filePath), "index.md")
+	}
 	trimmedPath := strings.TrimPrefix(filePath, config.CONTENT_DIR)
 	trimmedPath = strings.TrimSuffix(trimmedPath, filepath.Ext(trimmedPath)) + ".html"
 	staticUrl := filepath.Join(config.ROOT_DIR, trimmedPath)
