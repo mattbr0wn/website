@@ -13,8 +13,8 @@ deploy:
     templ generate
     go run {{main}}
     git add .
-    git commit -m "deployment"
-    git push
+    git commit -m "deployment" || echo "No files to commit, continuing..."
+    git push || echo "No files to push, continuing..."
     ssh -t fuzzylogic 'cd src/website && git pull && /usr/local/go/bin/go run {{main}} && cd .. && cd caddy && sudo docker compose -f docker-compose.yaml restart'
 
 dev:
