@@ -15,7 +15,7 @@ deploy:
     git add .
     git commit -m "deployment"
     git push
-    ssh -t -p $SSH_PORT $SERVER_USER@$SERVER_IP 'cd src/website && git pull && /usr/local/go/bin/go run {{main}} && cd .. && cd caddy && sudo docker compose -f docker-compose.yaml restart'
+    ssh -t fuzzylogic 'cd src/website && git pull && /usr/local/go/bin/go run {{main}} && cd .. && cd caddy && sudo docker compose -f docker-compose.yaml restart'
 
 dev:
     templ generate
