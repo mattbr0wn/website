@@ -1,21 +1,21 @@
 package components
 
-import "github.com/mattbr0wn/website/config"
-
 import ()
 
-templ Index(headData config.HeadData, body templ.Component) {
-	<!DOCTYPE html>
-	<html lang="en">
-		@Head(headData)
-		<body class={ Base() }>
-			@Header()
-			<div class={ Wrapper() }>
-				<div class={ Main() }>
-					@body
-				</div>
-			</div>
-			@Footer(headData.Author)
-		</body>
-	</html>
+templ Index(body templ.Component) {
+<!DOCTYPE html>
+<html lang="en">
+@Head()
+
+<body class={ Base() }>
+    @Header()
+    <div class={ Wrapper() }>
+        <div class={ Main() }>
+            @body
+        </div>
+    </div>
+    @Footer()
+</body>
+
+</html>
 }

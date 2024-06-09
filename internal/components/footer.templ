@@ -3,6 +3,7 @@ package components
 import (
 "time"
 "strconv"
+"github.com/mattbr0wn/website/config"
 )
 
 css footer() {
@@ -15,14 +16,16 @@ padding: 30px 0;
 border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-templ Footer(author string) {
+templ Footer() {
 <footer class={ footer() }>
     <div>
-        Copyright © { getCurrentYear() } { author }
+        Copyright © { getCurrentYear() } { config.AUTHOR }
         <br />
-        Copyright sucks, so all content is licensed under the <a
-            href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">Creative Commons CC0 Public Domain
-            Dedication.</a>
+        Copyright sucks, so all content is licensed under the
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">
+            Creative Commons CC0 Public Domain
+            Dedication.
+        </a>
     </div>
 </footer>
 }

@@ -2,62 +2,30 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"path/filepath"
 
 	"github.com/mattbr0wn/website/config"
+	"github.com/mattbr0wn/website/internal/markdown"
 	"github.com/mattbr0wn/website/internal/rss"
 	"github.com/mattbr0wn/website/internal/ssg"
 )
 
 func main() {
-	const port = "1616"
-	const rootPath = "web/static"
-	const buildCmd = "build"
 
-	headData, err := config.HeadConfig()
+	setupErr := ssg.SetupStaticPageBuild()
+	if setupErr != nil {
+		panic(setupErr)
+	}
+
+	markdownFiles, err := markdown.GetMarkdownFilePaths(config.CONTENT_DIR)
 	if err != nil {
 		panic(err)
-	}
-
-	markdownFiles, err := ssg.GetMarkdownFiles("web/content")
-	if err != nil {
-		panic(err)
-	}
-
-	buildErr := buildStaticWebsite(rootPath, headData, &markdownFiles)
-	if buildErr != nil {
-		fmt.Printf("Error: Can't build website: %v", err)
-	}
-}
-
-func buildStaticWebsite(rootPath string, headData config.HeadData, markdownFiles *[]string) error {
-	fmt.Println("Setting up build...")
-	// Remove the existing "static" directory
-	if err := os.RemoveAll(rootPath); err != nil {
-		fmt.Println("Error removing static directory:", err)
-		return err
-	}
-
-	// Create the "static" and "static/img" directories
-	if err := os.MkdirAll(filepath.Join(rootPath, "web/img"), os.ModePerm); err != nil {
-		fmt.Println("Error creating img directory:", err)
-		return err
-	}
-
-	// Copy image files into static
-	cmd := exec.Command("cp", "-r", "web/img", rootPath)
-	if err := cmd.Run(); err != nil {
-		fmt.Println("Error copying images to static:", err)
-		return err
 	}
 
 	fmt.Println("Building static pages...")
-	ssg.BuildStaticPages(rootPath, headData)
-	fmt.Println("Building RSS feed...")
-	rss.WriteRssFeed(rootPath, &headData, markdownFiles)
-	fmt.Println("Build complete.")
+	ssg.BuildStaticPages(markdownFiles)
 
-	return nil
+	fmt.Println("Building RSS feed...")
+	rss.WriteRssFeed(&markdownFiles)
+
+	fmt.Println("Build complete.")
 }

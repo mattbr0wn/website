@@ -36,26 +36,26 @@ type Item struct {
 	PubDate     string `xml:"pubDate"`
 }
 
-func WriteRssFeed(rootPath string, headData *config.HeadData, markdownFiles *[]string) {
-	xmlData, err := buildRssFeed(rootPath, headData, markdownFiles)
+func WriteRssFeed(markdownFiles *[]string) {
+	xmlData, err := buildRssFeed(markdownFiles)
 	if err != nil {
 		panic(err)
 	}
 
-	outputPath := filepath.Join(rootPath, "feed.xml")
+	outputPath := filepath.Join(config.ROOT_DIR, "feed.xml")
 	writeErr := os.WriteFile(outputPath, xmlData, 0644)
 	if writeErr != nil {
 		panic(writeErr)
 	}
 }
 
-func getFeedItems(rootPath string, headData *config.HeadData, markdownFiles *[]string) []Item {
+func getFeedItems(markdownFiles *[]string) []Item {
 	var rssItems []Item
 
 	for _, file := range *markdownFiles {
 		metadata, _, _ := markdown.ParseMarkdownFile(file)
 		if metadata.Draft != true && filepath.Base(file) != "index.md" {
-			link := headData.WebsiteUrl + "/" + strings.TrimPrefix(ssg.GeneratePath(rootPath, file), "web/static/")
+			link := filepath.Join(config.WEBSITE_URL, strings.TrimPrefix(ssg.GenerateStaticUrl(file), config.ROOT_DIR))
 			feedItems := Item{
 				Title:       metadata.Title,
 				Link:        link,
@@ -69,12 +69,12 @@ func getFeedItems(rootPath string, headData *config.HeadData, markdownFiles *[]s
 	return sortItemsByPubDate(rssItems)
 }
 
-func getChannelInfo(headData *config.HeadData, items []Item) Channel {
+func getChannelInfo(items []Item) Channel {
 	lastDate := items[0].PubDate
 	channel := Channel{
-		Title:         headData.Title,
-		Link:          headData.WebsiteUrl,
-		Description:   headData.Description,
+		Title:         config.TITLE,
+		Link:          config.WEBSITE_URL,
+		Description:   config.DESCRIPTION,
 		Language:      "en-us",
 		LastBuildDate: lastDate,
 		Items:         items,
@@ -101,9 +101,9 @@ func convertDateToRFC1123Z(dateString string) string {
 	return date.Format(time.RFC1123Z)
 }
 
-func buildRssFeed(rootPath string, headData *config.HeadData, markdownFiles *[]string) ([]byte, error) {
-	rssItems := getFeedItems(rootPath, headData, markdownFiles)
-	channel := getChannelInfo(headData, rssItems)
+func buildRssFeed(markdownFiles *[]string) ([]byte, error) {
+	rssItems := getFeedItems(markdownFiles)
+	channel := getChannelInfo(rssItems)
 
 	rss := RSS{
 		Version: "2.0",

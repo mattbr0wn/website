@@ -3,7 +3,6 @@ package components
 import (
 "fmt"
 "time"
-"github.com/mattbr0wn/website/config"
 "github.com/mattbr0wn/website/internal/markdown"
 "github.com/mattbr0wn/website/pkg/reading_time"
 )
@@ -29,10 +28,10 @@ margin-bottom: 20px;
 margin: 0 auto;
 }
 
-templ Article(headData config.HeadData, articleMeta markdown.Frontmatter, body templ.Component, bodyText *string) {
+templ Article(articleMeta markdown.Frontmatter, body templ.Component, bodyText *string) {
 <!DOCTYPE html>
 <html lang="en">
-@Head(headData)
+@Head()
 
 <body class={ Base() }>
     @Header()
@@ -46,7 +45,7 @@ templ Article(headData config.HeadData, articleMeta markdown.Frontmatter, body t
             @body
         </div>
     </div>
-    @Footer(headData.Author)
+    @Footer()
 </body>
 
 </html>

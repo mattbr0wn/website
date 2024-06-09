@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/a-h/templ"
 	"github.com/yuin/goldmark"
@@ -24,6 +25,28 @@ type ArticleData struct {
 	Metadata Frontmatter
 	Body     *string
 	Path     string
+}
+
+// Returns an array of filepaths for markdown files within a directory
+func GetMarkdownFilePaths(dir string) ([]string, error) {
+	var markdownFiles []string
+
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() && filepath.Ext(path) == ".md" {
+			markdownFiles = append(markdownFiles, path)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return markdownFiles, nil
 }
 
 func ParseMarkdownFile(filePath string) (Frontmatter, templ.Component, *string) {

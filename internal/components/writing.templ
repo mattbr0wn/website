@@ -1,7 +1,6 @@
 package components
 
 import (
-"github.com/mattbr0wn/website/config"
 "github.com/mattbr0wn/website/internal/markdown"
 "github.com/mattbr0wn/website/pkg/reading_time"
 )
@@ -31,10 +30,10 @@ color: #888;
 font-size: 14px;
 }
 
-templ Writing(headData config.HeadData, articles *[]markdown.ArticleData) {
+templ Writing(articles *[]markdown.ArticleData) {
 <!DOCTYPE html>
 <html lang="en">
-@Head(headData)
+@Head()
 
 <body class={ Base() }>
     @Header()
@@ -46,7 +45,7 @@ templ Writing(headData config.HeadData, articles *[]markdown.ArticleData) {
             }
         </div>
     </div>
-    @Footer(headData.Author)
+    @Footer()
 </body>
 
 </html>
