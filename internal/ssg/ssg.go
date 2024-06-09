@@ -15,7 +15,6 @@ import (
 )
 
 func SetupStaticPageBuild() error {
-
 	fmt.Println("Setting up build...")
 	// Remove the existing "static" directory
 	if err := os.RemoveAll(config.ROOT_DIR); err != nil {
@@ -41,27 +40,24 @@ func SetupStaticPageBuild() error {
 }
 
 func BuildStaticPages(markdownFiles []string) {
-
 	createStaticDirs(markdownFiles)
 	create404()
 
 	articleData := []markdown.ArticleData{}
-	var pageType string
 
 	for _, file := range markdownFiles {
 		switch file {
 		case filepath.Join(config.CONTENT_DIR, "index.md"):
-			pageType = "index"
+			generateHtmlPage("index", file, &articleData)
 		case filepath.Join(config.CONTENT_DIR, "about/index.md"):
-			pageType = "about"
+			generateHtmlPage("about", file, &articleData)
 		case filepath.Join(config.CONTENT_DIR, "writing/index.md"):
-			pageType = "writing-index"
+			// do nothing
 		default:
-			pageType = "writing"
+			generateHtmlPage("writing", file, &articleData)
 		}
-
-		generateHtmlPage(pageType, file, &articleData)
 	}
+	generateHtmlPage("writing-index", filepath.Join(config.CONTENT_DIR, "writing/index.md"), &articleData)
 }
 
 func GenerateStaticUrl(filePath string) string {
@@ -129,7 +125,7 @@ func generateHtmlPage(contentType string, filePath string, articleData *[]markdo
 		article := markdown.ArticleData{
 			Metadata: metadata,
 			Body:     mdString,
-			Path:     staticUrl,
+			Path:     strings.TrimPrefix(staticUrl, config.ROOT_DIR),
 		}
 
 		*articleData = append(*articleData, article)
