@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -17,22 +15,18 @@ import (
 func SetupStaticPageBuild() error {
 	fmt.Println("Setting up build...")
 	// Remove the existing "static" directory
-	if err := os.RemoveAll(config.ROOT_DIR); err != nil {
-		fmt.Println("Error removing static directory:", err)
+	if err := deleteDirectory(config.ROOT_DIR); err != nil {
 		return err
 	}
 
 	// Create the "static" and "static/img" directories
 	static_img_dir := filepath.Join(config.ROOT_DIR, "img")
-	if err := os.MkdirAll(static_img_dir, os.ModePerm); err != nil {
-		fmt.Println("Error creating img directory:", err)
+	if err := createDirectory(static_img_dir); err != nil {
 		return err
 	}
 
 	// Copy image files into static
-	cmd := exec.Command("cp", "-r", config.IMG_DIR, config.ROOT_DIR)
-	if err := cmd.Run(); err != nil {
-		fmt.Println("Error copying images to static:", err)
+	if err := copyDirectoryContents(config.IMG_DIR, config.ROOT_DIR); err != nil {
 		return err
 	}
 
@@ -70,14 +64,6 @@ func GenerateStaticUrl(filePath string) string {
 	return staticUrl
 }
 
-func createStaticHtmlPage(staticUrl string) *os.File {
-	f, err := os.Create(staticUrl)
-	if err != nil {
-		log.Fatalf("ERROR: Failed to create static HTML page: %v", err)
-	}
-	return f
-}
-
 // create directory structure for the static site
 func createStaticDirs(contentFiles []string) error {
 	for _, path := range contentFiles {
@@ -88,8 +74,7 @@ func createStaticDirs(contentFiles []string) error {
 		dirPath := filepath.Dir(trimmedPath)
 
 		// Create the directory if it doesn't exist
-		err := os.MkdirAll(filepath.Join(config.ROOT_DIR, dirPath), os.ModePerm)
-		if err != nil {
+		if err := createDirectory(filepath.Join(config.ROOT_DIR, dirPath)); err != nil {
 			return err
 		}
 	}
@@ -98,7 +83,7 @@ func createStaticDirs(contentFiles []string) error {
 
 func create404() {
 	staticUrl := filepath.Join(config.ROOT_DIR, "404.html")
-	f := createStaticHtmlPage(staticUrl)
+	f, _ := createFile(staticUrl)
 	err := components.NotFound().Render(context.Background(), f)
 	if err != nil {
 		log.Fatalf("ERROR: Failed to create 404 page: %v", err)
@@ -107,7 +92,7 @@ func create404() {
 
 func generateHtmlPage(contentType string, filePath string, articleData *[]markdown.ArticleData) {
 	staticUrl := GenerateStaticUrl(filePath)
-	f := createStaticHtmlPage(staticUrl)
+	f, _ := createFile(staticUrl)
 
 	metadata, body, mdString := markdown.ParseMarkdownFile(filePath)
 

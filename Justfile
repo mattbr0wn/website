@@ -23,3 +23,5 @@ dev:
     echo "Starting server on https://localhost:1616"
     caddy run --config {{devConfig}} --adapter caddyfile
 
+test:
+	go test ./...
