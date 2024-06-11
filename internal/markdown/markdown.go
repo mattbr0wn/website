@@ -3,6 +3,7 @@ package markdown
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -13,6 +14,12 @@ import (
 	"go.abhg.dev/goldmark/frontmatter"
 )
 
+type ArticleData struct {
+	Metadata Frontmatter
+	Body     *string
+	Path     string
+}
+
 type Frontmatter struct {
 	Title       string `yaml:"title"`
 	Description string `yaml:"description"`
@@ -21,17 +28,17 @@ type Frontmatter struct {
 	Draft       bool   `yaml:"draft"`
 }
 
-type ArticleData struct {
-	Metadata Frontmatter
-	Body     *string
-	Path     string
+type ParsedMarkdownFile struct {
+	Frontmatter Frontmatter
+	Html        templ.Component
+	Content     *string
 }
 
 // Returns an array of filepaths for markdown files within a directory
 func GetMarkdownFilePaths(dir string) ([]string, error) {
 	var markdownFiles []string
 
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	walkErr := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -42,19 +49,20 @@ func GetMarkdownFilePaths(dir string) ([]string, error) {
 
 		return nil
 	})
-	if err != nil {
-		return nil, err
+	if walkErr != nil {
+		return nil, fmt.Errorf("Error walking directory %s: %v", dir, walkErr)
 	}
 
 	return markdownFiles, nil
 }
 
-func ParseMarkdownFile(filePath string) (Frontmatter, templ.Component, *string) {
+func ParseMarkdownFile(filePath string) (ParsedMarkdownFile, error) {
+	result := ParsedMarkdownFile{}
 
 	// Read the markdown file
-	content, err := os.ReadFile(filePath)
-	if err != nil {
-		panic(err)
+	content, readErr := os.ReadFile(filePath)
+	if readErr != nil {
+		return result, fmt.Errorf("Error reading file %s: %v", filePath, readErr)
 	}
 
 	// Create a new Goldmark parser
@@ -67,8 +75,8 @@ func ParseMarkdownFile(filePath string) (Frontmatter, templ.Component, *string) 
 	// Parse markdown file
 	var buf bytes.Buffer
 	ctx := parser.NewContext()
-	if err := md.Convert(content, &buf, parser.WithContext(ctx)); err != nil {
-		panic(err)
+	if parseErr := md.Convert(content, &buf, parser.WithContext(ctx)); parseErr != nil {
+		return result, fmt.Errorf("Error parsing markdown from %s: %v", filePath, parseErr)
 	}
 
 	// Get parsed frontmatter
@@ -76,15 +84,21 @@ func ParseMarkdownFile(filePath string) (Frontmatter, templ.Component, *string) 
 
 	// Unmarshal the frontmatter into a struct
 	var metadata Frontmatter
-	if err := fm.Decode(&metadata); err != nil {
-		panic(err)
+	if decodeErr := fm.Decode(&metadata); decodeErr != nil {
+		return result, fmt.Errorf("Error decoding markdown from %s: %v", filePath, decodeErr)
 	}
 
 	// Get parsed Markdown content
 	bufString := buf.String()
 	parsedMarkdown := Unsafe(&bufString)
 
-	return metadata, parsedMarkdown, &bufString
+	result = ParsedMarkdownFile{
+		Frontmatter: metadata,
+		Html:        parsedMarkdown,
+		Content:     &bufString,
+	}
+
+	return result, nil
 }
 
 func Unsafe(html *string) templ.Component {

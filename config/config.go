@@ -11,4 +11,5 @@ const (
 	CONTENT_DIR = "web/content"
 	IMG_DIR     = "web/img"
 	ROOT_DIR    = "web/static"
+	INDEX       = "_index.md"
 )

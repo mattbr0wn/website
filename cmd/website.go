@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/mattbr0wn/website/config"
 	"github.com/mattbr0wn/website/internal/markdown"
@@ -10,15 +11,11 @@ import (
 )
 
 func main() {
-
-	setupErr := ssg.SetupStaticPageBuild()
-	if setupErr != nil {
-		panic(setupErr)
-	}
+	ssg.SetupStaticPageBuild()
 
 	markdownFiles, err := markdown.GetMarkdownFilePaths(config.CONTENT_DIR)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	fmt.Println("Building static pages...")

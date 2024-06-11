@@ -1,24 +1,22 @@
 package components
 
 import (
-"github.com/mattbr0wn/website/internal/markdown"
+	"github.com/mattbr0wn/website/internal/markdown"
 )
 
 templ About(articleMeta markdown.Frontmatter, body templ.Component) {
-<!DOCTYPE html>
-<html lang="en">
-@Head()
-
-<body class={ Base() }>
-    @Header()
-    <div class={ Wrapper() }>
-        <img class={ HeroImg() } src={ HeroImgPath(articleMeta) } alt={ articleMeta.Title } />
-        <div>
-            @body
-        </div>
-    </div>
-    @Footer()
-</body>
-
-</html>
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head()
+		<body class={ Base() }>
+			@Header()
+			<div class={ Wrapper() }>
+				<img class={ HeroImg() } src={ HeroImgPath(articleMeta) } alt={ articleMeta.Title }/>
+				<div class={ BodyText() }>
+					@body
+				</div>
+			</div>
+			@Footer()
+		</body>
+	</html>
 }

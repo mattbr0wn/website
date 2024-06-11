@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"github.com/mattbr0wn/website/internal/markdown"
 	"github.com/mattbr0wn/website/pkg/reading_time"
+	"log"
 	"time"
 )
 
@@ -63,7 +64,7 @@ func HeroImg() templ.CSSClass {
 	}
 }
 
-func Article(articleMeta markdown.Frontmatter, body templ.Component, bodyText *string) templ.Component {
+func Article(parsedMarkdown markdown.ParsedMarkdownFile) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -133,9 +134,9 @@ func Article(articleMeta markdown.Frontmatter, body templ.Component, bodyText *s
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(articleMeta.Title)
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(parsedMarkdown.Frontmatter.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 39, Col: 31}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 39, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -146,9 +147,9 @@ func Article(articleMeta markdown.Frontmatter, body templ.Component, bodyText *s
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(formatDate(articleMeta.Date))
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(formatDate(parsedMarkdown.Frontmatter.Date))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 41, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 41, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -159,9 +160,9 @@ func Article(articleMeta markdown.Frontmatter, body templ.Component, bodyText *s
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var8 string
-		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(reading_time.TimeToRead(*bodyText))
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(reading_time.TimeToRead(*parsedMarkdown.Content))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 42, Col: 48}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/article.templ`, Line: 42, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -193,7 +194,7 @@ func Article(articleMeta markdown.Frontmatter, body templ.Component, bodyText *s
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = body.Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = parsedMarkdown.Html.Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -226,9 +227,9 @@ func formatDate(dateString string) string {
 		"July", "August", "September", "October", "November", "December",
 	}
 
-	date, err := time.Parse("2006-01-02", dateString)
-	if err != nil {
-		panic(err)
+	date, parseErr := time.Parse("2006-01-02", dateString)
+	if parseErr != nil {
+		log.Fatalf("Error parsing date %s: %v", dateString, parseErr)
 	}
 
 	day := fmt.Sprintf("%02d", date.Day())

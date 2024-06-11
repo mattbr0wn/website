@@ -12,50 +12,48 @@ import (
 	"github.com/mattbr0wn/website/internal/markdown"
 )
 
-func SetupStaticPageBuild() error {
+func SetupStaticPageBuild() {
 	fmt.Println("Setting up build...")
 	// Remove the existing "static" directory
 	if err := deleteDirectory(config.ROOT_DIR); err != nil {
-		return err
+		log.Fatalf("Error deleting %s: %v", config.ROOT_DIR, err)
 	}
 
 	// Create the "static" and "static/img" directories
 	static_img_dir := filepath.Join(config.ROOT_DIR, "img")
 	if err := createDirectory(static_img_dir); err != nil {
-		return err
+		log.Fatalf("Error creating %s: %v", static_img_dir, err)
 	}
 
 	// Copy image files into static
 	if err := copyDirectoryContents(config.IMG_DIR, config.ROOT_DIR); err != nil {
-		return err
+		log.Fatalf("Error copying %s into %s: %v", config.IMG_DIR, config.ROOT_DIR, err)
 	}
-
-	return nil
 }
 
 func BuildStaticPages(markdownFiles []string) {
 	createStaticDirs(markdownFiles)
-	create404()
+	generate404()
 
 	articleData := []markdown.ArticleData{}
 
 	for _, file := range markdownFiles {
 		switch file {
-		case filepath.Join(config.CONTENT_DIR, "_index.md"):
+		case filepath.Join(config.CONTENT_DIR, config.INDEX):
 			generateHtmlPage("index", file, &articleData)
-		case filepath.Join(config.CONTENT_DIR, "about/_index.md"):
+		case filepath.Join(config.CONTENT_DIR, "about", config.INDEX):
 			generateHtmlPage("about", file, &articleData)
-		case filepath.Join(config.CONTENT_DIR, "writing/_index.md"):
+		case filepath.Join(config.CONTENT_DIR, "writing", config.INDEX):
 			// do nothing
 		default:
 			generateHtmlPage("writing", file, &articleData)
 		}
 	}
-	generateHtmlPage("writing-index", filepath.Join(config.CONTENT_DIR, "writing/_index.md"), &articleData)
+	generateHtmlPage("writing-index", filepath.Join(config.CONTENT_DIR, "writing", config.INDEX), &articleData)
 }
 
-func GenerateStaticUrl(filePath string) string {
-	if filepath.Base(filePath) == "_index.md" {
+func GenerateStaticPath(filePath string) string {
+	if filepath.Base(filePath) == config.INDEX {
 		filePath = filepath.Join(filepath.Dir(filePath), "index.md")
 	}
 	trimmedPath := strings.TrimPrefix(filePath, config.CONTENT_DIR)
@@ -81,54 +79,66 @@ func createStaticDirs(contentFiles []string) error {
 	return nil
 }
 
-func create404() {
+func generate404() {
 	staticUrl := filepath.Join(config.ROOT_DIR, "404.html")
-	f, _ := createFile(staticUrl)
-	err := components.NotFound().Render(context.Background(), f)
-	if err != nil {
-		log.Fatalf("ERROR: Failed to create 404 page: %v", err)
+
+	f, createErr := createFile(staticUrl)
+	if createErr != nil {
+		log.Fatalf("Error creating 404.html file: %v", createErr)
+	}
+
+	genErr := components.NotFound().Render(context.Background(), f)
+	if genErr != nil {
+		log.Fatalf("Error generating html for 404 page: %v", genErr)
 	}
 }
 
 func generateHtmlPage(contentType string, filePath string, articleData *[]markdown.ArticleData) {
-	staticUrl := GenerateStaticUrl(filePath)
-	f, _ := createFile(staticUrl)
+	staticUrl := GenerateStaticPath(filePath)
 
-	metadata, body, mdString := markdown.ParseMarkdownFile(filePath)
+	f, createErr := createFile(staticUrl)
+	if createErr != nil {
+		log.Fatalf("Error creating %s: %v", staticUrl, createErr)
+	}
+
+	parsedMarkdown, parseErr := markdown.ParseMarkdownFile(filePath)
+	if parseErr != nil {
+		log.Fatal(parseErr)
+	}
 
 	switch contentType {
 	case "index":
-		err := components.Index(body).Render(context.Background(), f)
+		err := components.Index(parsedMarkdown.Html).Render(context.Background(), f)
 		if err != nil {
-			log.Fatalf("ERROR: Failed to write index page: %v", err)
+			log.Fatalf("Error generating index.html for %s: %v", staticUrl, err)
 		}
 
 	case "about":
-		err := components.About(metadata, body).Render(context.Background(), f)
+		err := components.About(parsedMarkdown.Frontmatter, parsedMarkdown.Html).Render(context.Background(), f)
 		if err != nil {
-			log.Fatalf("ERROR: Failed to write about page: %v", err)
+			log.Fatalf("Error generating html for about: %v", err)
 		}
 
 	case "writing":
 		article := markdown.ArticleData{
-			Metadata: metadata,
-			Body:     mdString,
+			Metadata: parsedMarkdown.Frontmatter,
+			Body:     parsedMarkdown.Content,
 			Path:     strings.TrimPrefix(staticUrl, config.ROOT_DIR),
 		}
 
 		*articleData = append(*articleData, article)
-		err := components.Article(metadata, body, mdString).Render(context.Background(), f)
+		err := components.Article(parsedMarkdown).Render(context.Background(), f)
 		if err != nil {
-			log.Fatalf("ERROR: Failed to write %s: %v", staticUrl, err)
+			log.Fatalf("Error generating html for %s: %v", staticUrl, err)
 		}
 
 	case "writing-index":
 		err := components.Writing(articleData).Render(context.Background(), f)
 		if err != nil {
-			log.Fatalf("ERROR: Failed to write writing index page: %v", err)
+			log.Fatalf("Error generating html for writing/index.html: %v", err)
 		}
 
 	default:
-		log.Fatalf("ERROR: Page type not supported")
+		log.Fatalf("Page type %s not supported", contentType)
 	}
 }

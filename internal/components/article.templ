@@ -1,74 +1,73 @@
 package components
 
 import (
-"fmt"
-"time"
-"github.com/mattbr0wn/website/internal/markdown"
-"github.com/mattbr0wn/website/pkg/reading_time"
+	"fmt"
+	"time"
+	"github.com/mattbr0wn/website/internal/markdown"
+	"github.com/mattbr0wn/website/pkg/reading_time"
+	"log"
 )
 
 css DateAndReadTime() {
-display: flex;
-align-items: center;
-margin-bottom: 20px;
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
 }
 
 css PubDate() {
-color: blue;
+	color: blue;
 }
 
 css ReadTime() {
-font-style: italic;
+	font-style: italic;
 }
 
 css HeroImg() {
-max-width: 80ch;
-border-radius: 10px;
-margin-bottom: 20px;
-margin: 0 auto;
+	max-width: 80ch;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	margin: 0 auto;
 }
 
-templ Article(articleMeta markdown.Frontmatter, body templ.Component, bodyText *string) {
-<!DOCTYPE html>
-<html lang="en">
-@Head()
-
-<body class={ Base() }>
-    @Header()
-    <div class={ Wrapper() }>
-        <h1>{ articleMeta.Title }</h1>
-        <p>
-            { formatDate(articleMeta.Date) } ·
-            { reading_time.TimeToRead(*bodyText) }
-        </p>
-        <div class={ BodyText() }>
-            @body
-        </div>
-    </div>
-    @Footer()
-</body>
-
-</html>
+templ Article(parsedMarkdown markdown.ParsedMarkdownFile) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head()
+		<body class={ Base() }>
+			@Header()
+			<div class={ Wrapper() }>
+				<h1>{ parsedMarkdown.Frontmatter.Title }</h1>
+				<p>
+					{ formatDate(parsedMarkdown.Frontmatter.Date) } ·
+					{ reading_time.TimeToRead(*parsedMarkdown.Content) }
+				</p>
+				<div class={ BodyText() }>
+					@parsedMarkdown.Html
+				</div>
+			</div>
+			@Footer()
+		</body>
+	</html>
 }
 
 func HeroImgPath(articleMeta markdown.Frontmatter) string {
-return "../img/" + articleMeta.HeroImg
+	return "../img/" + articleMeta.HeroImg
 }
 
 func formatDate(dateString string) string {
-months := []string{
-"January", "February", "March", "April", "May", "June",
-"July", "August", "September", "October", "November", "December",
-}
+	months := []string{
+		"January", "February", "March", "April", "May", "June",
+		"July", "August", "September", "October", "November", "December",
+	}
 
-date, err := time.Parse("2006-01-02", dateString)
-if err != nil {
-panic(err)
-}
+	date, parseErr := time.Parse("2006-01-02", dateString)
+	if parseErr != nil {
+		log.Fatalf("Error parsing date %s: %v", dateString, parseErr)
+	}
 
-day := fmt.Sprintf("%02d", date.Day())
-monthName := months[date.Month()-1]
-year := fmt.Sprintf("%d", date.Year())
+	day := fmt.Sprintf("%02d", date.Day())
+	monthName := months[date.Month()-1]
+	year := fmt.Sprintf("%d", date.Year())
 
-return strings.Join([]string{day, monthName, year}, " ")
+	return strings.Join([]string{day, monthName, year}, " ")
 }

@@ -3,6 +3,7 @@ package rss
 import (
 	"encoding/xml"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -37,15 +38,15 @@ type Item struct {
 }
 
 func WriteRssFeed(markdownFiles *[]string) {
-	xmlData, err := buildRssFeed(markdownFiles)
-	if err != nil {
-		panic(err)
+	xmlData, xmlErr := buildRssFeed(markdownFiles)
+	if xmlErr != nil {
+		log.Fatalf("Error building RSS feed: %v", xmlErr)
 	}
 
 	outputPath := filepath.Join(config.ROOT_DIR, "feed.xml")
 	writeErr := os.WriteFile(outputPath, xmlData, 0644)
 	if writeErr != nil {
-		panic(writeErr)
+		log.Fatalf("Error writing %s: %v", outputPath, writeErr)
 	}
 }
 
@@ -53,14 +54,22 @@ func getFeedItems(markdownFiles *[]string) []Item {
 	var rssItems []Item
 
 	for _, file := range *markdownFiles {
-		metadata, _, _ := markdown.ParseMarkdownFile(file)
-		if metadata.Draft != true && filepath.Base(file) != "_index.md" {
-			link := filepath.Join(config.WEBSITE_URL, strings.TrimPrefix(ssg.GenerateStaticUrl(file), config.ROOT_DIR))
+		parsedMarkdownFile, parseErr := markdown.ParseMarkdownFile(file)
+		if parseErr != nil {
+			log.Fatal(parseErr)
+		}
+
+		if parsedMarkdownFile.Frontmatter.Draft == false && filepath.Base(file) != config.INDEX {
+			link := filepath.Join(config.WEBSITE_URL, strings.TrimPrefix(ssg.GenerateStaticPath(file), config.ROOT_DIR))
+			pub_date, err := convertDateToRFC1123Z(parsedMarkdownFile.Frontmatter.Date)
+			if err != nil {
+				log.Println(err)
+			}
 			feedItems := Item{
-				Title:       metadata.Title,
+				Title:       parsedMarkdownFile.Frontmatter.Title,
 				Link:        link,
-				Description: metadata.Description,
-				PubDate:     convertDateToRFC1123Z(metadata.Date),
+				Description: parsedMarkdownFile.Frontmatter.Description,
+				PubDate:     pub_date,
 			}
 			rssItems = append(rssItems, feedItems)
 		}
@@ -85,20 +94,25 @@ func getChannelInfo(items []Item) Channel {
 
 func sortItemsByPubDate(items []Item) []Item {
 	sort.Slice(items, func(i, j int) bool {
-		dateI, _ := time.Parse(time.RFC1123Z, items[i].PubDate)
-		dateJ, _ := time.Parse(time.RFC1123Z, items[j].PubDate)
+		dateI, errI := time.Parse(time.RFC1123Z, items[i].PubDate)
+		if errI != nil {
+			log.Printf("Error parsing date %v: %v", items[i].PubDate, errI)
+		}
+		dateJ, errJ := time.Parse(time.RFC1123Z, items[j].PubDate)
+		if errJ != nil {
+			log.Printf("Error parsing date %v: %v", items[j].PubDate, errJ)
+		}
 		return dateI.After(dateJ)
 	})
 	return items
 }
 
-func convertDateToRFC1123Z(dateString string) string {
+func convertDateToRFC1123Z(dateString string) (string, error) {
 	date, err := time.Parse("2006-01-02", dateString)
 	if err != nil {
-		fmt.Printf("ERROR: Cannot parse date %v", err)
-		return ""
+		return "", fmt.Errorf("Error parsing %v to string: %v", date, err)
 	}
-	return date.Format(time.RFC1123Z)
+	return date.Format(time.RFC1123Z), nil
 }
 
 func buildRssFeed(markdownFiles *[]string) ([]byte, error) {
@@ -112,6 +126,5 @@ func buildRssFeed(markdownFiles *[]string) ([]byte, error) {
 
 	// Marshal the RSS struct to XML
 	xmlData, err := xml.Marshal(rss)
-
 	return xmlData, err
 }
