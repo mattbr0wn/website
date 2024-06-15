@@ -1,9 +1,6 @@
-set dotenv-load
-
 devConfig := projectDir + "/deploy/Caddyfile.dev"
 projectDir := "~/src/github.com/mattbr0wn/website"
 main := "cmd/website.go"
-templDir := projectDir + "/bin"
 
 build:
 	templ generate
@@ -24,4 +21,4 @@ dev:
     caddy run --config {{devConfig}} --adapter caddyfile
 
 test:
-	go test ./...
+	go test ./... -coverprofile=coverage.out

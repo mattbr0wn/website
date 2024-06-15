@@ -60,7 +60,12 @@ func getFeedItems(markdownFiles *[]string) []Item {
 		}
 
 		if parsedMarkdownFile.Frontmatter.Draft == false && filepath.Base(file) != config.INDEX {
-			link := filepath.Join(config.WEBSITE_URL, strings.TrimPrefix(ssg.GenerateStaticPath(file), config.ROOT_DIR))
+			path, pathErr := ssg.GenerateStaticPath(file)
+			if pathErr != nil {
+				log.Println(pathErr)
+			}
+
+			link := filepath.Join(config.WEBSITE_URL, strings.TrimPrefix(path, config.ROOT_DIR))
 			pub_date, err := convertDateToRFC1123Z(parsedMarkdownFile.Frontmatter.Date)
 			if err != nil {
 				log.Println(err)

@@ -12,6 +12,7 @@ import (
 	"github.com/mattbr0wn/website/internal/markdown"
 )
 
+// Tests todo
 func SetupStaticPageBuild() {
 	fmt.Println("Setting up build...")
 	// Remove the existing "static" directory
@@ -31,6 +32,7 @@ func SetupStaticPageBuild() {
 	}
 }
 
+// Tests todo
 func BuildStaticPages(markdownFiles []string) {
 	createStaticDirs(markdownFiles)
 	generate404()
@@ -52,17 +54,22 @@ func BuildStaticPages(markdownFiles []string) {
 	generateHtmlPage("writing-index", filepath.Join(config.CONTENT_DIR, "writing", config.INDEX), &articleData)
 }
 
-func GenerateStaticPath(filePath string) string {
+func GenerateStaticPath(filePath string) (string, error) {
+	if filepath.Ext(filePath) != ".md" {
+		return "", fmt.Errorf("Invalid file extension: %s.", filepath.Ext(filePath))
+	}
+
 	if filepath.Base(filePath) == config.INDEX {
 		filePath = filepath.Join(filepath.Dir(filePath), "index.md")
 	}
 	trimmedPath := strings.TrimPrefix(filePath, config.CONTENT_DIR)
 	trimmedPath = strings.TrimSuffix(trimmedPath, filepath.Ext(trimmedPath)) + ".html"
 	staticUrl := filepath.Join(config.ROOT_DIR, trimmedPath)
-	return staticUrl
+	return staticUrl, nil
 }
 
 // create directory structure for the static site
+// Tests todo
 func createStaticDirs(contentFiles []string) error {
 	for _, path := range contentFiles {
 		// Remove the content dir prefix to get the content path without project structure
@@ -79,6 +86,7 @@ func createStaticDirs(contentFiles []string) error {
 	return nil
 }
 
+// Tests todo
 func generate404() {
 	staticUrl := filepath.Join(config.ROOT_DIR, "404.html")
 
@@ -93,8 +101,12 @@ func generate404() {
 	}
 }
 
+// Tests todo
 func generateHtmlPage(contentType string, filePath string, articleData *[]markdown.ArticleData) {
-	staticUrl := GenerateStaticPath(filePath)
+	staticUrl, pathErr := GenerateStaticPath(filePath)
+	if pathErr != nil {
+		log.Println(pathErr)
+	}
 
 	f, createErr := createFile(staticUrl)
 	if createErr != nil {
