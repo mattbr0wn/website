@@ -11,8 +11,10 @@ import (
 )
 
 func main() {
+	fmt.Println("Setting up build...")
 	ssg.SetupStaticPageBuild()
 
+	fmt.Println("Collecting markdown files...")
 	markdownFiles, err := markdown.GetMarkdownFilePaths(config.CONTENT_DIR)
 	if err != nil {
 		log.Fatal(err)
@@ -22,7 +24,7 @@ func main() {
 	ssg.BuildStaticPages(markdownFiles)
 
 	fmt.Println("Building RSS feed...")
-	rss.WriteRssFeed(&markdownFiles)
+	rss.WriteRssFeed(markdownFiles)
 
 	fmt.Println("Build complete.")
 }

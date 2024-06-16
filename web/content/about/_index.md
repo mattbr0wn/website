@@ -1,6 +1,7 @@
 ---
 title: Matt Brown
 hero: matt_brown.webp
+date: 2024-01-01
 ---
 
 My personal mission is to help build and grow 1000 tech companies across Ascending Markets, mainly in the global South.

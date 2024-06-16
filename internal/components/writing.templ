@@ -1,67 +1,65 @@
 package components
 
 import (
-"github.com/mattbr0wn/website/internal/markdown"
-"github.com/mattbr0wn/website/pkg/reading_time"
+	"github.com/mattbr0wn/website/internal/markdown"
+	"github.com/mattbr0wn/website/pkg/reading_time"
 )
 
 css postGrid() {
-display: flex;
-flex-direction: column;
-gap: 20px;
-flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	flex: 1;
 }
 
 css postCard() {
-border: 1px solid #ccc;
-border-radius: 5px;
-padding: 20px;
-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-display: flex;
-align-items: center;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
 }
 
 css postContent() {
-flex: 1;
+	flex: 1;
 }
 
 css postMeta() {
-color: #888;
-font-size: 14px;
+	color: #888;
+	font-size: 14px;
 }
 
-templ Writing(articles *[]markdown.ArticleData) {
-<!DOCTYPE html>
-<html lang="en">
-@Head()
-
-<body class={ Base() }>
-    @Header()
-    <div class={ Wrapper() }>
-        <h1>Writing</h1>
-        <div class={ postGrid() }>
-            for _, article := range *articles {
-            @card(article.Metadata, article.Path, article.Body)
-            }
-        </div>
-    </div>
-    @Footer()
-</body>
-
-</html>
+templ Writing(articles *[]markdown.ParsedMarkdownFile) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head()
+		<body class={ Base() }>
+			@Header()
+			<div class={ Wrapper() }>
+				<h1>Writing</h1>
+				<div class={ postGrid() }>
+					for _, article := range *articles {
+						@card(article.Frontmatter(), article.StaticFileUrl(), article.BodyAsString())
+					}
+				</div>
+			</div>
+			@Footer()
+		</body>
+	</html>
 }
 
-templ card(articleMeta markdown.Frontmatter, path string, bodyText *string) {
-<a href={ templ.SafeURL(path[:len(path)-5]) } class={ NoLinkStyles() }>
-    <div class={ postCard() }>
-        <div class={ postContent() }>
-            <h2>{ articleMeta.Title }</h2>
-            <p>{ articleMeta.Description }</p>
-            <p class={ postMeta() }>
-                { formatDate(articleMeta.Date) } · {
-                reading_time.TimeToRead(*bodyText) }
-            </p>
-        </div>
-    </div>
-</a>
+templ card(articleMeta markdown.Frontmatter, path string, bodyText string) {
+	<a href={ templ.SafeURL(path[:len(path)-5]) } class={ NoLinkStyles() }>
+		<div class={ postCard() }>
+			<div class={ postContent() }>
+				<h2>{ articleMeta.Title }</h2>
+				<p>{ articleMeta.Description }</p>
+				<p class={ postMeta() }>
+					{ formatDate(articleMeta.Date) } · { 
+                reading_time.TimeToRead(bodyText) }
+				</p>
+			</div>
+		</div>
+	</a>
 }

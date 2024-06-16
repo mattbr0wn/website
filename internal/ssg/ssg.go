@@ -12,46 +12,54 @@ import (
 	"github.com/mattbr0wn/website/internal/markdown"
 )
 
-// Tests todo
 func SetupStaticPageBuild() {
-	fmt.Println("Setting up build...")
-	// Remove the existing "static" directory
 	if err := deleteDirectory(config.ROOT_DIR); err != nil {
 		log.Fatalf("Error deleting %s: %v", config.ROOT_DIR, err)
 	}
 
-	// Create the "static" and "static/img" directories
-	static_img_dir := filepath.Join(config.ROOT_DIR, "img")
-	if err := createDirectory(static_img_dir); err != nil {
-		log.Fatalf("Error creating %s: %v", static_img_dir, err)
+	staticImgDir := filepath.Join(config.ROOT_DIR, "img")
+	if err := createDirectories(config.ROOT_DIR, staticImgDir); err != nil {
+		log.Fatalf("Error creating img directory: %v", err)
 	}
 
-	// Copy image files into static
-	if err := copyDirectoryContents(config.IMG_DIR, config.ROOT_DIR); err != nil {
-		log.Fatalf("Error copying %s into %s: %v", config.IMG_DIR, config.ROOT_DIR, err)
+	if err := copyImages(); err != nil {
+		log.Fatalf("Error copying img directory: %v", err)
 	}
 }
 
-// Tests todo
 func BuildStaticPages(markdownFiles []string) {
-	createStaticDirs(markdownFiles)
-	generate404()
+	if err := createStaticDirs(markdownFiles); err != nil {
+		log.Fatalf("Error creating static directories: %v", err)
+	}
 
-	articleData := []markdown.ArticleData{}
+	if err := generate404(); err != nil {
+		log.Fatalf("Error creating 404.html: %v", err)
+	}
+
+	articleData := []markdown.ParsedMarkdownFile{}
 
 	for _, file := range markdownFiles {
 		switch file {
 		case filepath.Join(config.CONTENT_DIR, config.INDEX):
-			generateHtmlPage("index", file, &articleData)
+			if err := generateIndexPage(file, &articleData); err != nil {
+				log.Fatalf("Error generating index page: %v", err)
+			}
 		case filepath.Join(config.CONTENT_DIR, "about", config.INDEX):
-			generateHtmlPage("about", file, &articleData)
+			if err := generateAboutPage(file, &articleData); err != nil {
+				log.Fatalf("Error generating about page: %v", err)
+			}
 		case filepath.Join(config.CONTENT_DIR, "writing", config.INDEX):
 			// do nothing
 		default:
-			generateHtmlPage("writing", file, &articleData)
+			if err := generateWritingPage(file, &articleData); err != nil {
+				log.Fatalf("Error generating writing page: %v", err)
+			}
 		}
 	}
-	generateHtmlPage("writing-index", filepath.Join(config.CONTENT_DIR, "writing", config.INDEX), &articleData)
+
+	if err := generateWritingIndexPage(filepath.Join(config.CONTENT_DIR, "writing", config.INDEX), &articleData); err != nil {
+		log.Fatalf("Error generating writing/index.html: %v", err)
+	}
 }
 
 func GenerateStaticPath(filePath string) (string, error) {
@@ -68,17 +76,26 @@ func GenerateStaticPath(filePath string) (string, error) {
 	return staticUrl, nil
 }
 
-// create directory structure for the static site
-// Tests todo
+func createDirectories(dirs ...string) error {
+	for _, dir := range dirs {
+		if err := createDirectory(dir); err != nil {
+			return fmt.Errorf("Error creating directory %s: %v", dir, err)
+		}
+	}
+	return nil
+}
+
+func copyImages() error {
+	if err := copyDirectoryContents(config.IMG_DIR, config.ROOT_DIR); err != nil {
+		return fmt.Errorf("Error copying %s into %s: %v", config.IMG_DIR, config.ROOT_DIR, err)
+	}
+	return nil
+}
+
 func createStaticDirs(contentFiles []string) error {
 	for _, path := range contentFiles {
-		// Remove the content dir prefix to get the content path without project structure
 		trimmedPath := strings.TrimPrefix(path, config.CONTENT_DIR)
-
-		// Get the directory path by removing the file name
 		dirPath := filepath.Dir(trimmedPath)
-
-		// Create the directory if it doesn't exist
 		if err := createDirectory(filepath.Join(config.ROOT_DIR, dirPath)); err != nil {
 			return err
 		}
@@ -86,71 +103,82 @@ func createStaticDirs(contentFiles []string) error {
 	return nil
 }
 
-// Tests todo
-func generate404() {
+func generate404() error {
 	staticUrl := filepath.Join(config.ROOT_DIR, "404.html")
 
-	f, createErr := createFile(staticUrl)
-	if createErr != nil {
-		log.Fatalf("Error creating 404.html file: %v", createErr)
+	f, err := createFile(staticUrl)
+	if err != nil {
+		return fmt.Errorf("Error creating 404.html file: %v", err)
 	}
 
-	genErr := components.NotFound().Render(context.Background(), f)
-	if genErr != nil {
-		log.Fatalf("Error generating html for 404 page: %v", genErr)
+	if err := components.NotFound().Render(context.Background(), f); err != nil {
+		return fmt.Errorf("Error generating html for 404 page: %v", err)
 	}
+
+	return nil
 }
 
-// Tests todo
-func generateHtmlPage(contentType string, filePath string, articleData *[]markdown.ArticleData) {
-	staticUrl, pathErr := GenerateStaticPath(filePath)
-	if pathErr != nil {
-		log.Println(pathErr)
+func generateIndexPage(filePath string, articleData *[]markdown.ParsedMarkdownFile) error {
+	return generateHtmlPage("index", filePath, articleData)
+}
+
+func generateAboutPage(filePath string, articleData *[]markdown.ParsedMarkdownFile) error {
+	return generateHtmlPage("about", filePath, articleData)
+}
+
+func generateWritingPage(filePath string, articleData *[]markdown.ParsedMarkdownFile) error {
+	return generateHtmlPage("writing", filePath, articleData)
+}
+
+func generateWritingIndexPage(filePath string, articleData *[]markdown.ParsedMarkdownFile) error {
+	return generateHtmlPage("writing-index", filePath, articleData)
+}
+
+func generateHtmlPage(contentType string, filePath string, articleData *[]markdown.ParsedMarkdownFile) error {
+	staticUrl, err := GenerateStaticPath(filePath)
+	if err != nil {
+		return err
 	}
 
-	f, createErr := createFile(staticUrl)
-	if createErr != nil {
-		log.Fatalf("Error creating %s: %v", staticUrl, createErr)
+	f, err := createFile(staticUrl)
+	if err != nil {
+		return fmt.Errorf("Error creating %s: %v", staticUrl, err)
 	}
 
-	parsedMarkdown, parseErr := markdown.ParseMarkdownFile(filePath)
-	if parseErr != nil {
-		log.Fatal(parseErr)
+	parsedMarkdown, err := markdown.ParseMarkdownFile(filePath)
+	if err != nil {
+		return err
 	}
+
+	parsedMarkdown.SetStaticFileUrl(strings.TrimPrefix(staticUrl, config.ROOT_DIR))
 
 	switch contentType {
 	case "index":
-		err := components.Index(parsedMarkdown.Html).Render(context.Background(), f)
-		if err != nil {
-			log.Fatalf("Error generating index.html for %s: %v", staticUrl, err)
+		html := components.Unsafe(parsedMarkdown.BodyAsString())
+		if err := components.Index(html).Render(context.Background(), f); err != nil {
+			return fmt.Errorf("Error generating index.html for %s: %v", staticUrl, err)
 		}
 
 	case "about":
-		err := components.About(parsedMarkdown.Frontmatter, parsedMarkdown.Html).Render(context.Background(), f)
-		if err != nil {
-			log.Fatalf("Error generating html for about: %v", err)
+		html := components.Unsafe(parsedMarkdown.BodyAsString())
+		if err := components.About(parsedMarkdown.Frontmatter(), html).Render(context.Background(), f); err != nil {
+			return fmt.Errorf("Error generating html for about: %v", err)
 		}
 
 	case "writing":
-		article := markdown.ArticleData{
-			Metadata: parsedMarkdown.Frontmatter,
-			Body:     parsedMarkdown.Content,
-			Path:     strings.TrimPrefix(staticUrl, config.ROOT_DIR),
-		}
-
-		*articleData = append(*articleData, article)
-		err := components.Article(parsedMarkdown).Render(context.Background(), f)
-		if err != nil {
-			log.Fatalf("Error generating html for %s: %v", staticUrl, err)
+		*articleData = append(*articleData, *parsedMarkdown)
+		if err := components.Article(*parsedMarkdown).Render(context.Background(), f); err != nil {
+			return fmt.Errorf("Error generating html for %s: %v", staticUrl, err)
 		}
 
 	case "writing-index":
-		err := components.Writing(articleData).Render(context.Background(), f)
-		if err != nil {
-			log.Fatalf("Error generating html for writing/index.html: %v", err)
+		if err := components.Writing(articleData).Render(context.Background(), f); err != nil {
+			return fmt.Errorf("Error generating html for writing/index.html: %v", err)
 		}
 
 	default:
-		log.Fatalf("Page type %s not supported", contentType)
+		return fmt.Errorf("Page type %s not supported", contentType)
 	}
+
+	return nil
 }

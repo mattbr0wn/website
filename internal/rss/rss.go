@@ -7,12 +7,10 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 	"time"
 
 	"github.com/mattbr0wn/website/config"
 	"github.com/mattbr0wn/website/internal/markdown"
-	"github.com/mattbr0wn/website/internal/ssg"
 )
 
 type RSS struct {
@@ -37,7 +35,7 @@ type Item struct {
 	PubDate     string `xml:"pubDate"`
 }
 
-func WriteRssFeed(markdownFiles *[]string) {
+func WriteRssFeed(markdownFiles []string) {
 	xmlData, xmlErr := buildRssFeed(markdownFiles)
 	if xmlErr != nil {
 		log.Fatalf("Error building RSS feed: %v", xmlErr)
@@ -50,30 +48,25 @@ func WriteRssFeed(markdownFiles *[]string) {
 	}
 }
 
-func getFeedItems(markdownFiles *[]string) []Item {
+func getFeedItems(markdownFiles []string) []Item {
 	var rssItems []Item
 
-	for _, file := range *markdownFiles {
+	for _, file := range markdownFiles {
 		parsedMarkdownFile, parseErr := markdown.ParseMarkdownFile(file)
 		if parseErr != nil {
 			log.Fatal(parseErr)
 		}
 
-		if parsedMarkdownFile.Frontmatter.Draft == false && filepath.Base(file) != config.INDEX {
-			path, pathErr := ssg.GenerateStaticPath(file)
-			if pathErr != nil {
-				log.Println(pathErr)
-			}
-
-			link := filepath.Join(config.WEBSITE_URL, strings.TrimPrefix(path, config.ROOT_DIR))
-			pub_date, err := convertDateToRFC1123Z(parsedMarkdownFile.Frontmatter.Date)
+		if parsedMarkdownFile.Frontmatter().Draft == false && filepath.Base(file) != config.INDEX {
+			link := parsedMarkdownFile.StaticFileUrl()
+			pub_date, err := convertDateToRFC1123Z(parsedMarkdownFile.Frontmatter().Date)
 			if err != nil {
 				log.Println(err)
 			}
 			feedItems := Item{
-				Title:       parsedMarkdownFile.Frontmatter.Title,
+				Title:       parsedMarkdownFile.Frontmatter().Title,
 				Link:        link,
-				Description: parsedMarkdownFile.Frontmatter.Description,
+				Description: parsedMarkdownFile.Frontmatter().Description,
 				PubDate:     pub_date,
 			}
 			rssItems = append(rssItems, feedItems)
@@ -120,7 +113,7 @@ func convertDateToRFC1123Z(dateString string) (string, error) {
 	return date.Format(time.RFC1123Z), nil
 }
 
-func buildRssFeed(markdownFiles *[]string) ([]byte, error) {
+func buildRssFeed(markdownFiles []string) ([]byte, error) {
 	rssItems := getFeedItems(markdownFiles)
 	channel := getChannelInfo(rssItems)
 
